@@ -1,5 +1,6 @@
 import datetime
 import random
+import hashlib
 
 from django.conf import settings
 from django.contrib.auth.models import User, Group
@@ -7,7 +8,6 @@ from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils.hashcompat import sha_constructor
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
@@ -17,7 +17,7 @@ class InvitationManager(models.Manager):
     def create_invitation(self, user, email):
         """
         Create an ``Invitation`` and returns it.
-        
+
         The code for the ``Invitation`` will be a SHA1 hash, generated
         from a combination of the ``User``'s username and a random salt.
         """
@@ -27,8 +27,8 @@ class InvitationManager(models.Manager):
         kwargs['date_invited'] = date_invited
         #kwargs['groups':groups]
         kwargs['expiration_date'] = date_invited + datetime.timedelta(settings.ACCOUNT_INVITATION_DAYS)
-        salt = sha_constructor(str(random.random())).hexdigest()[:5]
-        kwargs['code'] = sha_constructor("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
+        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+        kwargs['code'] = hashlib.sha1("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
         print kwargs
         invite = self.create(**kwargs)
         return invite
@@ -41,7 +41,7 @@ class InvitationManager(models.Manager):
             inviteds_count = self.filter(from_user=user).count()
             remaining_invitations = settings.INVITATIONS_PER_USER - inviteds_count
             if remaining_invitations < 0:
-                # Possible for admin to change INVITATIONS_PER_USER 
+                # Possible for admin to change INVITATIONS_PER_USER
                 # to something lower than the initial setting, resulting
                 # in a negative value
                 return 0
@@ -74,7 +74,7 @@ class Invitation(models.Model):
     def send(self, from_email=settings.DEFAULT_FROM_EMAIL,
         subject_template='invitation/invitation_email_subject.txt',
         message_template='invitation/invitation_email.txt'):
-        
+
         """
         Send an invitation email.
         """
