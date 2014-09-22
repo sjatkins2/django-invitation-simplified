@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tivix-django-invitation-simplified',
-    version='0.0.1',
+    version='0.0.2',
     description='Simple Django app to allow user registration by invitation.',
     author='Joe Carpenter',
     author_email='lungofish@gmail.com',
