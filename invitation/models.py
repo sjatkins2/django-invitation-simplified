@@ -69,7 +69,11 @@ class Invitation(models.Model):
         return u"Invitation from %s to %s" % (self.from_user.username, self.email)
 
     def expired(self):
-        return timezone.make_aware(self.expiration_date,timezone.get_default_timezone()) < timezone.now()
+        expiration_date = self.expiration_date
+        if not timezone.is_aware(expiration_date):
+            expiration_date = timezone.make_aware(expiration_date,
+                timezone.get_default_timezone())
+        return expiration_date < timezone.now()
 
     def send(self, from_email=settings.DEFAULT_FROM_EMAIL,
         subject_template='invitation/invitation_email_subject.txt',
