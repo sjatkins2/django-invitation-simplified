@@ -10,6 +10,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from django.contrib.auth.tokens import default_token_generator
 
 __all__ = ['Invitation']
 
@@ -27,9 +28,7 @@ class InvitationManager(models.Manager):
         kwargs['date_invited'] = date_invited
         #kwargs['groups':groups]
         kwargs['expiration_date'] = date_invited + datetime.timedelta(settings.ACCOUNT_INVITATION_DAYS)
-        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-        kwargs['code'] = hashlib.sha1("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
-        print kwargs
+        kwargs['code'] = default_token_generator.make_token(user)
         invite = self.create(**kwargs)
         return invite
 
