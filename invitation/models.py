@@ -27,9 +27,8 @@ class InvitationManager(models.Manager):
         kwargs['date_invited'] = date_invited
         #kwargs['groups':groups]
         kwargs['expiration_date'] = date_invited + datetime.timedelta(settings.ACCOUNT_INVITATION_DAYS)
-        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+        salt = hashlib.sha1(str(random.random())).hexdigest()
         kwargs['code'] = hashlib.sha1("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
-        print kwargs
         invite = self.create(**kwargs)
         return invite
 
