@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^invite/$',
         invite,
         name='invitation_invite'),
-    url(r'^invite/(?P<invitation_code>[0-9A-Za-z_\-]+)/$',
+    url(r'^invite/(?P<invitation_code>\w+)/$',
         invitation_accepted,
         name='invitation_accepted'),
 )
