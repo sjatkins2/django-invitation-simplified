@@ -3,7 +3,7 @@ import random
 import hashlib
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import models
@@ -58,8 +58,8 @@ class Invitation(models.Model):
     date_invited = models.DateTimeField(_('date invited'))
     expiration_date = models.DateTimeField()
     used = models.BooleanField(default=False)
-    from_user = models.ForeignKey(User, related_name='invitations_sent')
-    to_user = models.ForeignKey(User, null=True, blank=True, related_name='invitation_received')
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='invitations_sent')
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='invitation_received')
     email = models.EmailField(unique=True)
 
     objects = InvitationManager()
