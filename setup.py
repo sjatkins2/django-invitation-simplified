@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='tivix-django-invitation-simplified',
-    version='0.0.2',
+    name='matterport-django-invitation-simplified',
+    version='0.1.0',
     description='Simple Django app to allow user registration by invitation.',
     author='Joe Carpenter',
     author_email='lungofish@gmail.com',
-    maintainer="Sumit Chachra",
-    maintainer_email="sumit@tivix.com",
-    url='https://github.com/Tivix/django-invitation-simplified',
+    maintainer="Samantha Atkins",
+    maintainer_email="sjatkins@matterport.com",
+    url='https://github.com/matterport/django-invitation-simplified',
     packages=find_packages(),
     classifiers=[
         'Development Status :: 4 - Beta',

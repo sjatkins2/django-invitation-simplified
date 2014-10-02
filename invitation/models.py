@@ -28,7 +28,8 @@ class InvitationManager(models.Manager):
         kwargs['date_invited'] = date_invited
         #kwargs['groups':groups]
         kwargs['expiration_date'] = date_invited + datetime.timedelta(settings.ACCOUNT_INVITATION_DAYS)
-        kwargs['code'] = default_token_generator.make_token(user)
+        salt = hashlib.sha1(str(random.random())).hexdigest()
+        kwargs['code'] = hashlib.sha1("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
         invite = self.create(**kwargs)
         return invite
 
