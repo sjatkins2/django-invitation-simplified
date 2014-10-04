@@ -28,8 +28,9 @@ class InvitationManager(models.Manager):
         kwargs['date_invited'] = date_invited
         #kwargs['groups':groups]
         kwargs['expiration_date'] = date_invited + datetime.timedelta(settings.ACCOUNT_INVITATION_DAYS)
-        salt = hashlib.sha1(str(random.random())).hexdigest()
-        kwargs['code'] = hashlib.sha1("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
+        kwargs['code'] = default_token_generator.make_token(user)
+#        salt = hashlib.sha1(str(random.random())).hexdigest()
+#        kwargs['code'] = hashlib.sha1("%s%s%s" % (datetime.datetime.now(), salt, user.username)).hexdigest()
         invite = self.create(**kwargs)
         return invite
 
@@ -99,7 +100,7 @@ class Invitation(models.Model):
     #Extends the invitation for X days from the time it's called, where X is the account_invitation_days
     def extend(self):
         date_now = datetime.datetime.now()
-        extend_time = timedelta(days=settings.ACCOUNT_INVITATION_DAYS)
+        extend_time = datetime.timedelta(days=settings.ACCOUNT_INVITATION_DAYS)
         self.expiration_date = date_now + extend_time
         self.save()
 
